@@ -1,0 +1,105 @@
+{% set articleCount = 0 %}
+{% set cardIndex = 0 %}
+
+{% set labelInfo = cusLabel ? 'hide_labels' : '' %}
+{% set noAuthor = authorHide ? 'hide_author' : '' %}
+
+<div class="row" data-section="05">
+    <div class="col-12">
+        <div class="c-page-head c-page-head-xs">
+            <div class="u-heading__large u-heading__large-xs u-pr--6">{{title}}</div>
+            <a href="{{link}}" class="c-page-head__link">View all</a>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row {{labelInfo}} {{noAuthor}}">
+
+    <div class="col-12 col-md-8 col-xl-6 order-2 u-tablet-border-left u-desktop-border-left u-desktop-lg-border-left u-desktop-lg-border-right">
+        {% if articles[articleCount] %}
+            {{this.render('../_single-article.twig', {
+                article: articles[articleCount], 
+                position: (articleCount+1),
+                imageSize: {width: 720, height: 420},
+                containerClass: "card-1-mobile card-5-tablet card-5-desktop card-5-desktop-lg card-highlight"
+            }) | raw}}
+            {% set articleCount = (dev) ? articleCount : articleCount + 1 %}
+
+        {% endif %}
+       
+    </div>
+    
+    <div class="col-12 col-md-4 col-xl-3 order-1">
+        <div class="row">
+            <div class="col-12">
+                {% if articles[articleCount] %}
+                    {{this.render('../_single-article.twig', {
+                        article: articles[articleCount], 
+                        position: (articleCount+1),
+                        imageSize: {width: 720, height: 420},
+                        containerClass: "card-4-mobile card-4-tablet card-4-desktop card-4-desktop-lg"
+                    }) | raw}}
+                    {% set articleCount = (dev) ? articleCount : articleCount + 1 %}
+                {% endif %}
+            </div>
+            <div class="col-12">
+                <hr class="o-rule o-rule--15">
+            </div>
+            {% for i in 0..1 if articles[articleCount] %}
+                <div class="col-12">
+                    {{this.render('../_single-article.twig', {
+                        article: articles[articleCount], 
+                        position: (articleCount+1),
+                        imageSize: {width: 720, height: 420},
+                        containerClass: "card-2-mobile card-2-tablet card-2-desktop card-2-desktop-lg"
+                    }) | raw}}
+                {% set articleCount = (dev) ? articleCount : articleCount + 1 %}
+                </div>
+                {% if i == 0 %}
+                    <div class="col-12">
+                        <hr class="o-rule o-rule--15">
+                    </div>
+                {% endif %}
+
+            {% endfor %}
+            <div class="col-12  d-md-none">
+                <hr class="o-rule o-rule--15">
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-12 col-xl-3 order-3 u-mobile-margin-top-30 u-tablet-margin-top-20">
+        {% set popularArticles = _Article.getPopularArticles({ limit: 6, sortBy: 'VIEWS', scope: 'network',  interval: 168 }) %}
+        <div class="row">  
+            <div class="col-12">
+                <div class="c-page-head c-page-head-xs c-page-head__subhead">
+                    <div class="u-heading__medium">Most Popular</div>
+                    
+                </div>
+            </div> 
+        </div>
+        <ul class="row c-news-feed__list">
+        
+            {% for i in 0..5 if popularArticles[i] %}
+                <li class="col-12 col-md-4 col-xl-12{% if i < 2 %} u-tablet-border-right {% elseif i > 2 %} d-md-none d-xl-block{% endif %}">
+                    {{this.render('../_single-article.twig', {
+                        article: popularArticles[i], 
+                        containerClass: "card-14-mobile card-14-tablet card-14-desktop card-14-desktop-lg",
+                        imageSuppress: true
+                    }) | raw}}
+                </li>
+                
+                {% if i < 5 %}
+                    <div class="col-12 d-md-none d-xl-block">
+                        <hr class="o-rule o-rule--15">
+                        {# <hr class="o-rule d-md-block"> #}
+                    </div>
+                {% endif %}
+                
+            {% endfor %}
+        </ul>
+
+    </div>
+</div>
