@@ -60,9 +60,18 @@
                     </a>
                 </div>
                 <div class="c-header__main__rs">
-                    <ul class="c-navigation-0__list">
+                    <div class="c-header__main__resp d-flex d-md-none">
+                        <div class="c-hamburger__wrap js-menu">
+                            <div class="c-hamburger__wrap-text">Menu</div>
+                            <div class="c-hamburger__wrap-icons o-hamburger"></div>
+                        </div>
+                    </div>
+                    <div class="c-header__main__desk d-none d-md-flex align-items-center">
+                        <ul class="c-navigation-0__list">
                             {{ this.render('../../../partials/_menu.twig', {'menu': headermenu}) | raw }}
                         </ul>
+                        <a href="javascript:;" class="c-button c-button--rounded c-button--theme">Contact us</a>
+                    </div>
                 </div>
             </div>
         </div>

@@ -10,19 +10,18 @@
     display: inline-block;
     border: 2px solid $transparent;
     border-radius: 2px;
-    @include font-size(13);
+    @include font-size(16);
     line-height: 2.8;
     letter-spacing: 1.4px;
-    font-weight: $weightMedium;
+    font-weight: $weightBold;
     @include transition(all 0.3s ease);
     min-width: 120px;
     text-align: center;
-    height: 40px;
+    height: 48px;
     font-family: $secondaryFont;
     // @include flexbox();
     // @include align-items(center);
     // @include justify-content(center);
-    text-transform: uppercase;
     
     &--background-white{
         background-color: white;
@@ -161,6 +160,30 @@
         color: $white;
         border-color: $error;
         background-color: $error;
+
+        &:hover {
+            color: $white;
+            border-color: $blackred;
+            background-color: $blackred;
+        }
+
+        &--bordered {
+            color: $error;
+            border-color: $grey-3;
+            background-color: transparent;
+
+            &:hover {
+                color: $white;
+                border-color: $blackred;
+                background-color: $blackred;
+            }
+        }
+    }
+
+    &--theme {
+        color: $white;
+        border-color: var(--main-color);
+        background-color: var(--main-color);
 
         &:hover {
             color: $white;
