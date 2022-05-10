@@ -1,0 +1,70 @@
+{% set headermenu = _Menu.get({'menuType': 'header', "menuGroupName":"header-main"}) %}
+{% set miniMenu = _Menu.get({'menuType': 'header', 'menuGroupName': 'header-mini'}) %}
+
+{% set loggedin = _User.isGuest() ? false : true %}
+{% set user = loggedin ? _User.getUser() : null %}
+
+{% set logo = networkData.templatePath~'/static/images/logo.svg'%}
+
+{% set logoWidth = 758 %}
+{% set logoHeight = 114 %}
+
+{% set paywall = true %}
+{% if config['paywall']['active'] is defined and config['paywall']['active'] == false %}
+    {% set paywall = false %}
+{% endif %}
+
+{% if config['logo'] is defined %}
+    {% if config['logo']['width'] is defined %}
+        {% set logoWidth = config['logo']['width'] %}
+
+        {% if config['logo']['height'] is not defined %}
+            {% set logoHeight = 0 %}
+        {% endif %}
+    {% endif %}
+
+    {% if config['logo']['height'] is defined %}
+        {% set logoHeight = config['logo']['height'] %}
+
+        {% if config['logo']['width'] is not defined %}
+            {% set logoWidth = 0 %}
+        {% endif %}
+
+    {% endif %}
+{% endif %}
+
+
+
+{% if networkData.logoMedia | length > 0 %}
+    {% set logo = _Media.getMediaUrl(networkData.logoMedia, logoWidth, logoHeight, {'crop': 'fit'} ) %}
+{% endif %}
+
+
+{% set dateFormat = "l, j F Y" %}
+{% if config['dateFormat'] is defined and config['dateFormat'] != "" %}
+    {% set dateFormat = config['dateFormat'] %}
+{% endif %}
+{% set theDate = _AppHelper.getCurrentTimestampBasedOnTimezone() %}
+{% set date = _AppHelper.getDefaultTimezoneDateTime(theDate, dateFormat) %}
+{% set site = networkData.title | lower | replace({" ":"-"}) %}
+
+<header class="c-header">
+    <div class="container">
+        <div class="row">
+            <div class="c-header__main">
+                <div class="c-header__main__ls">
+                    <a href="{{networkData.defaultBlogUrl}}" class="c-header__main__logo {{ site }}">
+                        <figure class="c-header__main__figure">
+                            <img src="{{logo}}" class="image-fluid {{ site }}" />
+                        </figure>
+                    </a>
+                </div>
+                <div class="c-header__main__rs">
+                    <ul class="c-navigation-0__list">
+                            {{ this.render('../../../partials/_menu.twig', {'menu': headermenu}) | raw }}
+                        </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

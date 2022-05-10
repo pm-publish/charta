@@ -5,7 +5,7 @@
     {% set externalClass = (parentItem.isExternal) ? 'external-link' : '' %}
     {% set children = parentItem.children is defined and parentItem.children | length > 0  %}
 
-    <li class="dropdown">
+    <li>
         <a  class="{{activeClass}} {{externalClass}} "
             href="{{parentItem.link | raw}}"
             {% if parentItem.target != "" %} 
@@ -23,7 +23,7 @@
         </a>
     
 
-        {% if children %}
+        {#{% if children %}
 
             <div class="list-arrow-container">
                 <div class="list-arrow">
@@ -60,6 +60,6 @@
                     </li>
                 {% endfor %}
             </ul>
-        {% endif %}
+        {% endif %}#}
     </li>
 {% endfor %}

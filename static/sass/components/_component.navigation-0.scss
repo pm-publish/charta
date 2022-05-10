@@ -1,0 +1,20 @@
+/* Begin navigation style */
+
+.c-navigation-0 {
+    &__list {
+        @include flexbox();
+        li {
+            margin-right: 48px;
+            a {
+                color: $grey-1;
+                @include font-size(16);
+                line-height: 24px;
+                font-weight: 500;
+            }
+        }
+    }
+}
+
+
+
+/* End navigation style */

@@ -1,0 +1,14 @@
+/* Begin header style */
+
+.c-header {
+    background-color: $white;
+    padding: 25px 0;
+    &__main {
+        @include flexbox;
+        @include justify-content(space-between);
+        @include align-items(center);
+        flex: 1;
+    }
+}
+
+/* End header style */

@@ -17,6 +17,11 @@
 {% set breaking = {} %}
 
 
+{% set themeColor = "#4A90E2" %}
+{% if networkData['styling']['colours']['primaryColor'] is defined %}
+    {% set themeColor = networkData['styling']['colours']['primaryColor'] %}
+{% endif %}
+
 
 {# *******************************************************
             CONFIG OPTIONS SET IN PLATFORM
@@ -100,89 +105,23 @@
 <main id="main" class="site-main" role="main" data-layout="{{layoutTitle}}">
 
 
-{# *******************************************************
-                Fetch all needed feeds
-******************************************************* #}
-{% for key in blogFeeds | keys %}
+<div class="cta-wrapper">
+    <div class="cta-info">
+        <div class="cta-info__icon">
+            <svg width="725" height="501" viewBox="0 0 725 501" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M-215.553 409.136C1.01713 440.31 -151.754 485.182 220.045 593.934C591.844 702.688 821.13 475.717 684.883 217.536C548.636 -40.6441 573.593 -392.399 288.288 -466.833C2.98261 -541.266 -430.935 378.089 -215.553 409.136Z" fill="{{themeColor}}" />
+            </svg>
+        </div>
+        <div class="cta-info__content">
+            <h2>Lorem ipsum oane aiorl bauess teiar</h2>
+            <p>Proin tempor ligula at sodales tempor. Praesent lobortis, ligula ac ultricies lobortis, mauris purus tempus ante, ac varius diam dolor eu elit. </p>
+            <a href="javascript:;">CTA</a>
+        </div>
+    </div>
+    <div class="cta-image" style="background-image: url('{{networkData.templatePath}}/static/images/cta_image.png')"></div>
+</div>
+<div class="cta-wrapper cta-d2"></div>
 
-    {% set break = false %}
-    {% for blog in networkData.networkBlogs if not break %}
-
-
-        {# FOR DEV  #}
-        {% if dev %}
-            {% set blogFeeds = blogFeeds | merge({
-                (key) : { 
-                    'feed' : _Blog.getBlogFeed({'limit': 2, 'offset': 0}), 
-                    'link' : blog.link 
-                    } 
-                }) %}
-        {% endif %}
-
-
-        {# FOR PRODUCTION #}
-        {% if not dev and blog.title | lower == key | lower %}
-        {# {% if blog.title | lower == key | lower %} #}
-            {% set feed = _Blog.getBlogFeed({
-                'offset' : 0, 
-                'blogid' : blog.guid,
-                'limit'  : blogFeeds[key]['limit']
-                })
-            %}
-
-            {% set blogFeeds = blogFeeds | merge({
-                (key) : {
-                    'feed'      : feed,
-                    'link'      : blog.link
-                    }
-                }) %}
-            {% set break = true %}
-        {% endif %}
-
-    {% endfor %}
-{% endfor %}
-
-
-    {# *******************************************************
-                        RENDER PANELS
-    ******************************************************* #}
-
-    
-
-    {% set bannerNo = 1 %}
-    {% for pagesection in panels | keys %}
-
-        {% if panels[pagesection]['active'] is not defined or panels[pagesection]['active'] == true %}
-
-
-            {% set params = {
-                'networkData' : networkData,
-                'blogFeeds'   : blogFeeds,
-                'blogData'    : blogData,
-                'config'      : panels[pagesection],
-                'dev'         : dev
-            } %}
-
-        {% if breaking.partial is defined and "00" in panels[pagesection]['template'] %}
-            {% set params = params | merge({'config' : breaking.partial }) %}
-        {% endif %}
-
-            {{this.render('render.twig', params) | raw}} 
-
-            {% if loop.index in bannerSpots %}
-                {% if config['inventory']['adSpace']['banner'][bannerNo] is defined %}
-                    <div class="j-adslot" id="{{config['inventory']['adSpace']['banner'][bannerNo]}}" data-adshape="banner"></div>
-                {% endif %}
-                {% set bannerNo = bannerNo + 1 %}
-            {% endif %}
-
-
-        {% endif %}
-
-    {% endfor %}
-
-
-    <div class="j-keyword-cont" data-keywords="{{blogData.keywords}}"></div>
 </main><!-- .site-main -->
 
 

@@ -47,14 +47,14 @@
 @import 'component.login-form';
 @import 'component.forgot-form';
 @import 'component.account-form';
-@import 'component.property-form';
+//@import 'component.property-form';
 @import 'component.reset-password'; 
 @import 'component.checkbox'; 
 
 @import 'component.error';
 
 @import 'component.article';
-@import 'component.paywalled_cta';
+//@import 'component.paywalled_cta';
 @import 'component.advertisment';
 @import 'component.related-articles';
 @import 'component.article-gallery';
@@ -71,19 +71,20 @@
 @import 'component.eventform';
 @import 'component.events';
 @import 'component.event';
-@import 'component.events-panel';
+//@import 'component.events-panel';
 
 //header
-@import 'component.header-4';
-@import 'component.header-top-bar';
+@import 'component.header';
+//@import 'component.header-top-bar';
+@import 'component.navigation-0';
 @import 'component.navigation-4';
 @import 'component.search-bar';
-@import 'component.weather'; 
-@import 'component.weather-reverse'; 
+//@import 'component.weather'; 
+//@import 'component.weather-reverse'; 
 
 @import 'component.footer';
 @import 'component.signup-footer';
-@import 'component.mailchimp-modal';
+//@import 'component.mailchimp-modal';
 // @import 'component.forms';
 @import 'component.messagebox';
 @import 'component.modals';
@@ -96,11 +97,11 @@
 @import 'component.search';
 
 // listings
-@import 'component.listing';
-@import 'component.property-search';
-@import 'component.propertyarticle';
+//@import 'component.listing';
+//@import 'component.property-search';
+//@import 'component.propertyarticle';
 
-@import "component.altsite";
+//@import "component.altsite";
 @import 'component.section';
 @import 'component.section-panel';
 @import 'component.subscribe'; 
@@ -114,14 +115,14 @@
 @import 'component.managed-user'; 
 @import 'component.managed-user-new'; 
 @import 'component.managed-user-search'; 
-@import 'component.profile-message'; 
+//@import 'component.profile-message'; 
 
-@import "component.classified-search";
-@import "component.classifieds-form";
-@import "component.classifieds";
+//@import "component.classified-search";
+//@import "component.classifieds-form";
+//@import "component.classifieds";
 
-@import 'component.faqs';
-@import 'component.landing';
+//@import 'component.faqs';
+//@import 'component.landing';
 
 // old
 @import "component.modal-login-form";
@@ -132,7 +133,7 @@
 @import "component.lightbox-modal";
 
 
-@import 'component.screen';
+//@import 'component.screen';
 @import "component.cta";
 
 // Gazette
@@ -146,34 +147,34 @@
 
 //Cards
 @import "card";
-@import "card-negative";
+//@import "card-negative";
 @import "card-1";
-@import "card-2";
-@import "card-3";
-@import "card-4";
-@import "card-5";
-@import "card-6";
-@import "card-7";
-@import "card-8";
-@import "card-9";
-@import "card-10";
-@import "card-11";
-@import "card-12";
-@import "card-13";
-@import "card-14";
-@import "card-15";
+//@import "card-2";
+// @import "card-3";
+// @import "card-4";
+// @import "card-5";
+// @import "card-6";
+// @import "card-7";
+// @import "card-8";
+// @import "card-9";
+// @import "card-10";
+// @import "card-11";
+// @import "card-12";
+// @import "card-13";
+// @import "card-14";
+// @import "card-15";
 
 
-@import "card-social-popup";
+//@import "card-social-popup";
 
 @import "event-card";
-@import "event-card-1";
-@import "event-card-2";  // leaderboard
-@import "card-plan";
-@import "card-screen";
-@import "card-property";
+// @import "event-card-1";
+// @import "event-card-2"; 
+// @import "card-plan";
+// @import "card-screen";
+// @import "card-property";
 
 
 @import "acme-card";
 @import "acme-card-1";
-@import "acme-card-10";  // classifieds lightbox
+//@import "acme-card-10";  // classifieds lightbox
