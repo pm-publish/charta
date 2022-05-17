@@ -31,36 +31,3 @@
 }
 
 /* End header style */
-
-
-.c-section-panel__background {
-    position: relative;
-    min-height: 1000px;
-    overflow: hidden;
-
-    &:before {
-        content: '';
-        background-image: url('../icons/bg_shape_top.svg');
-        background-size: cover;
-        position: absolute;
-        left: 0;
-        width: 100%;
-        height: 566px;
-        display: block;
-        background-position: bottom;
-        top: -20%;
-    }
-
-    &:after {
-        content: '';
-        background-image: url('../icons/bg_shape_bottom.svg');
-        background-size: cover;
-        position: absolute;
-        left: 0;
-        width: 100%;
-        height: 160px;
-        display: block;
-        background-position: bottom;
-        bottom: 0;
-    }
-}

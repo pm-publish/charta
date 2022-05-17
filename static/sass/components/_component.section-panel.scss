@@ -1,10 +1,46 @@
 /* section page  style */
 
+
 .c-section-panel__background {
-    @include padding(25 0);
-    background:var(--main-color);
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 90px;
+    background:hsla(var(--main-color-h), var(--main-color-s), var(--main-color-l), 0.4);
     @media #{$desktop-up} {
         @include margin(30 0 0 0);
+    }
+
+    &:before {
+        content: '';
+        background-image: url('../icons/bg_shape_top.svg');
+        background-size: cover;
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: 700px;
+        display: block;
+        background-position: bottom;
+        top: -15%;
+    }
+
+    &:after {
+        content: '';
+        background-image: url('../icons/bg_shape_bottom.svg');
+        background-size: cover;
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: 160px;
+        display: block;
+        background-position: bottom;
+        bottom: 0;
+    }
+    &.c-section-panel__background__lessCard {
+        padding-bottom: 140px;
+
+        &:before {
+            height: 650px;
+        }
     }
 }
 

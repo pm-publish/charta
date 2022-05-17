@@ -51,26 +51,28 @@
 <header class="c-header">
     <div class="container">
         <div class="row">
-            <div class="c-header__main">
-                <div class="c-header__main__ls">
-                    <a href="{{networkData.defaultBlogUrl}}" class="c-header__main__logo {{ site }}">
-                        <figure class="c-header__main__figure">
-                            <img src="{{logo}}" class="image-fluid {{ site }}" />
-                        </figure>
-                    </a>
-                </div>
-                <div class="c-header__main__rs">
-                    <div class="c-header__main__resp d-flex d-md-none">
-                        <div class="c-hamburger__wrap js-menu">
-                            <div class="c-hamburger__wrap-text">Menu</div>
-                            <div class="c-hamburger__wrap-icons o-hamburger"></div>
-                        </div>
+            <div class="col-12">
+                <div class="c-header__main">
+                    <div class="c-header__main__ls">
+                        <a href="{{networkData.defaultBlogUrl}}" class="c-header__main__logo {{ site }}">
+                            <figure class="c-header__main__figure">
+                                <img src="{{logo}}" class="image-fluid {{ site }}" />
+                            </figure>
+                        </a>
                     </div>
-                    <div class="c-header__main__desk d-none d-md-flex align-items-center">
-                        <ul class="c-navigation-0__list">
-                            {{ this.render('../../../partials/_menu.twig', {'menu': headermenu}) | raw }}
-                        </ul>
-                        <a href="javascript:;" class="c-button c-button--rounded c-button--theme">Contact us</a>
+                    <div class="c-header__main__rs">
+                        <div class="c-header__main__resp d-flex d-md-none">
+                            <div class="c-hamburger__wrap js-menu">
+                                <div class="c-hamburger__wrap-text">Menu</div>
+                                <div class="c-hamburger__wrap-icons o-hamburger"></div>
+                            </div>
+                        </div>
+                        <div class="c-header__main__desk d-none d-md-flex align-items-center">
+                            <ul class="c-navigation-0__list">
+                                {{ this.render('../../../partials/_menu.twig', {'menu': headermenu}) | raw }}
+                            </ul>
+                            <a href="javascript:;" class="c-button c-button--rounded c-button--theme">Contact us</a>
+                        </div>
                     </div>
                 </div>
             </div>

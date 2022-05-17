@@ -134,7 +134,10 @@
 
 
 //@import 'component.screen';
-@import "component.cta";
+@import "component.cta-01";
+@import "component.cta-02";
+@import "component.cta-03";
+@import "component.cta-04";
 
 // Gazette
 @import "component.blog-details";
@@ -178,3 +181,26 @@
 @import "acme-card";
 @import "acme-card-1";
 //@import "acme-card-10";  // classifieds lightbox
+
+
+.gallery_view {
+    @include flexbox;
+    @include justify-content(space-between);
+    margin: 40px 0 20px;
+    a {
+        + a {
+            margin-left: 20px;
+        }
+    }
+    @media (max-width: 540px) {
+        flex-wrap: wrap;
+        a {
+            &:nth-child(5) {
+                display: none;
+            }
+            @include flex(0 0 calc(50% - 20px));
+            margin: 0 10px 20px !important;
+        }
+        
+    }
+}

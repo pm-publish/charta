@@ -1,0 +1,35 @@
+{% set cta = _CallToAction.getKeywordBasedCTA('body_cta')%}
+
+{% set ctaImage = networkData.templatePath~'/static/images/cta_image2.png' %}
+{% if cta.media['path'] is defined and cta.media['path'] is not empty %}
+    {% set ctaImage = cta.media['path'] %}
+{% endif %}
+
+{% set themeColor = "#4A90E2" %}
+{% if networkData['styling']['colours']['primaryColor'] is defined %}
+    {% set themeColor = networkData['styling']['colours']['primaryColor'] %}
+{% endif %}
+
+{% set themeColorPrimary = "#4A90E2" %}
+{% if networkData['styling']['colours']['headingColor'] is defined %}
+    {% set themeColorPrimary = networkData['styling']['colours']['headingColor'] %}
+{% endif %}
+
+<div class="cta-wrapper cta-d2">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 col-md-6 col-lg-7 order-2 order-md-1">
+                <div class="cta-image">
+                    <img src="{{ctaImage}}" class="img-fluid" />
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-5 order-1 order-md-2">
+                <div class="cta-info__content">
+                    <h2 class="heading">{{cta.title}}</h2>
+                    <p class="desc">{{cta.description}}</p>
+                    <a href="{{cta.button.url}}" class="c-button c-button--rounded c-button--theme">{{cta.button.text}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

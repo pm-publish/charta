@@ -45,6 +45,20 @@
                 }
             ]
         },
+        "cta" : {
+            "extendedAttributes": [
+                {
+                    "name": "firstname",
+                    "label": "First Name",
+                    "type": "inputbox"
+                },
+                {
+                    "name": "companyname",
+                    "label": "Company Name",
+                    "type": "inputbox"
+                }
+            ]
+        },
         "article": {
             "extendedAttributes": [
                 {

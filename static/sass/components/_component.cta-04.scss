@@ -1,0 +1,52 @@
+.cta {
+    $cta: &;
+    &-wrapper {
+        $ctaWrapper: &;
+
+        &.cta-d4 {
+            padding: 80px 0 120px;
+            background-color: var(--sec-color);
+
+            #{$cta} {
+                &-info {
+                    position: relative;
+
+                    &__content {
+                        .heading {
+                            @include font-size(32);
+                            font-weight: $weightBold;
+                            line-height: 1.4;
+                            margin-bottom: 15px;
+                            color: var(--white);
+                            margin-right: 80px;
+
+                            @media (max-width: 767px) {
+                                margin-right: 0px;
+                            }
+                        }
+                    }
+
+                    &__details {
+                        border-left: 1px solid var(--white);
+                        padding-left: 50px;
+
+                        &-name {
+                            color: $white;
+                            font-weight: $weightBold;
+                            @include font-size(20);
+                            margin-top: 20px;
+                        }
+                        &-companyName {
+                            color: $white;
+                            @include font-size(20);
+                            margin-top: 10px;                         
+                        }
+                        .c-button {
+                            margin-top: 50px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

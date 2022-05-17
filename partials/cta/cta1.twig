@@ -1,0 +1,45 @@
+{% set cta = _CallToAction.getKeywordBasedCTA('header_cta')%}
+
+{% set ctaImage = networkData.templatePath~'/static/images/cta_image.png' %}
+{% if cta.media['path'] is defined and cta.media['path'] is not empty %}
+    {% set ctaImage = cta.media['path'] %}
+{% endif %}
+{% set themeColor = "#4A90E2" %}
+{% if networkData['styling']['colours']['primaryColor'] is defined %}
+    {% set themeColor = networkData['styling']['colours']['primaryColor'] %}
+{% endif %}
+
+{% set themeColorPrimary = "#4A90E2" %}
+{% if networkData['styling']['colours']['headingColor'] is defined %}
+    {% set themeColorPrimary = networkData['styling']['colours']['headingColor'] %}
+{% endif %}
+
+<div class="cta-wrapper cta-d1">
+    <div class="cta-info">
+        <div class="cta-info__icon">
+            <div class="d-none d-md-flex">
+                <svg width="725" height="501" viewBox="0 0 725 501" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M-215.553 409.136C1.01713 440.31 -151.754 485.182 220.045 593.934C591.844 702.688 821.13 475.717 684.883 217.536C548.636 -40.6441 573.593 -392.399 288.288 -466.833C2.98261 -541.266 -430.935 378.089 -215.553 409.136Z" fill="{{themeColor}}" />
+                </svg>
+            </div>
+            <div class="d-flex d-md-none responsive-shape">
+                <svg width="1048" height="307" viewBox="0 0 1048 307" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <mask id="mask0_50_404" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="1048" height="307">
+                        <rect width="307" height="1047.86" transform="matrix(0 1 1 0 0 0)" fill="{{themeColor}}"/>
+                    </mask>
+                    <g mask="url(#mask0_50_404)">
+                        <path d="M794.605 2023.14C892.26 1571.12 964.345 1899.83 1248.45 1131.97C1532.56 364.112 1087.82 -152.773 523.393 96.424C-41.0379 345.621 -778.993 241.141 -977.992 831.7C-1176.99 1422.26 697.392 2472.67 794.605 2023.14Z" fill="{{themeColor}}"/>
+                    </g>
+                </svg>
+
+
+            </div>
+        </div>
+        <div class="cta-info__content">
+            <h2>{{cta.title}}</h2>
+            <p>{{cta.description}}</p>
+            <a href="{{cta.button.url}}" class="c-button c-button--rounded c-button--theme">{{cta.button.text}}</a>
+        </div>
+    </div>
+    <div class="cta-image" style="background-image: url('{{ctaImage}}')"></div>
+</div>

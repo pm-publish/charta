@@ -59,9 +59,11 @@
     {% if config.template != 'partials/panels/section-classified-panel' or index > 1 %}
         {% set margin = 'u-margin-top-30 u-desktop-margin-top-40' %}
     {% endif %}
-
+    {% if config.articleCount <= 3 %}
+        {% set customClass = 'c-section-panel__background__lessCard' %}
+    {% endif %}
     {% if config.background %}
-        <div class="c-section-panel__background {{margin}}">
+        <div class="c-section-panel__background {{customClass}} {{margin}}">
             {% set margin = '' %}
 
     {% endif %}

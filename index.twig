@@ -17,11 +17,6 @@
 {% set breaking = {} %}
 
 
-{% set themeColor = "#4A90E2" %}
-{% if networkData['styling']['colours']['primaryColor'] is defined %}
-    {% set themeColor = networkData['styling']['colours']['primaryColor'] %}
-{% endif %}
-
 
 {# *******************************************************
             CONFIG OPTIONS SET IN PLATFORM
@@ -104,53 +99,163 @@
 
 <main id="main" class="site-main" role="main" data-layout="{{layoutTitle}}">
 
+{% set ctaHeader = _CallToAction.getKeywordBasedCTA('header_cta')%}
+{% if ctaHeader %}
+    {{ this.render('partials/cta/cta1.twig', {
+        networkData: networkData,
+    }) | raw }}
+{% endif %}
 
-<div class="cta-wrapper cta-d1">
-    <div class="cta-info">
-        <div class="cta-info__icon">
-            <div class="d-none d-md-flex">
-                <svg width="725" height="501" viewBox="0 0 725 501" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M-215.553 409.136C1.01713 440.31 -151.754 485.182 220.045 593.934C591.844 702.688 821.13 475.717 684.883 217.536C548.636 -40.6441 573.593 -392.399 288.288 -466.833C2.98261 -541.266 -430.935 378.089 -215.553 409.136Z" fill="{{themeColor}}" />
-                </svg>
-            </div>
-            <div class="d-flex d-md-none responsive-shape">
-                <svg width="1048" height="307" viewBox="0 0 1048 307" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <mask id="mask0_50_404" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="1048" height="307">
-                        <rect width="307" height="1047.86" transform="matrix(0 1 1 0 0 0)" fill="{{themeColor}}"/>
-                    </mask>
-                    <g mask="url(#mask0_50_404)">
-                        <path d="M794.605 2023.14C892.26 1571.12 964.345 1899.83 1248.45 1131.97C1532.56 364.112 1087.82 -152.773 523.393 96.424C-41.0379 345.621 -778.993 241.141 -977.992 831.7C-1176.99 1422.26 697.392 2472.67 794.605 2023.14Z" fill="{{themeColor}}"/>
-                    </g>
-                </svg>
+{% set cta2 = _CallToAction.getKeywordBasedCTA('body_cta')%}
+{% if cta2 %}
+    {{ this.render('partials/cta/cta2.twig', {
+        networkData: networkData,
+    }) | raw }}
+{% endif %}
+
+{# *******************************************************
+                Fetch all needed feeds
+******************************************************* #}
+{% for key in blogFeeds | keys %}
+
+    {% set break = false %}
+    {% for blog in networkData.networkBlogs if not break %}
 
 
-            </div>
-        </div>
-        <div class="cta-info__content">
-            <h2>Lorem ipsum oane aiorl bauess teiar</h2>
-            <p>Proin tempor ligula at sodales tempor. Praesent lobortis, ligula ac ultricies lobortis, mauris purus tempus ante, ac varius diam dolor eu elit. </p>
-            <a href="javascript:;" class="c-button c-button--rounded c-button--theme">CTA</a>
-        </div>
+        {# FOR DEV  #}
+        {% if dev %}
+            {% set blogFeeds = blogFeeds | merge({
+                (key) : { 
+                    'feed' : _Blog.getBlogFeed({'limit': 2, 'offset': 0}), 
+                    'link' : blog.link 
+                    } 
+                }) %}
+        {% endif %}
+
+
+        {# FOR PRODUCTION #}
+        {% if not dev and blog.title | lower == key | lower %}
+        {# {% if blog.title | lower == key | lower %} #}
+            {% set feed = _Blog.getBlogFeed({
+                'offset' : 0, 
+                'blogid' : blog.guid,
+                'limit'  : blogFeeds[key]['limit']
+                })
+            %}
+
+            {% set blogFeeds = blogFeeds | merge({
+                (key) : {
+                    'feed'      : feed,
+                    'link'      : blog.link
+                    }
+                }) %}
+            {% set break = true %}
+        {% endif %}
+
+    {% endfor %}
+{% endfor %}
+
+
+    {# *******************************************************
+                        RENDER PANELS
+    ******************************************************* #}
+
+    
+
+    {% set bannerNo = 1 %}
+    {% for pagesection in panels | keys %}
+
+        {% if panels[pagesection]['active'] is not defined or panels[pagesection]['active'] == true %}
+
+
+            {% set params = {
+                'networkData' : networkData,
+                'blogFeeds'   : blogFeeds,
+                'blogData'    : blogData,
+                'config'      : panels[pagesection],
+                'dev'         : dev
+            } %}
+
+        {% if breaking.partial is defined and "00" in panels[pagesection]['template'] %}
+            {% set params = params | merge({'config' : breaking.partial }) %}
+        {% endif %}
+
+            {{this.render('render.twig', params) | raw}} 
+
+            {% if loop.index in bannerSpots %}
+                {% if config['inventory']['adSpace']['banner'][bannerNo] is defined %}
+                    <div class="j-adslot" id="{{config['inventory']['adSpace']['banner'][bannerNo]}}" data-adshape="banner"></div>
+                {% endif %}
+                {% set bannerNo = bannerNo + 1 %}
+            {% endif %}
+
+
+        {% endif %}
+
+    {% endfor %}
+
+    {% set cta3 = _CallToAction.getKeywordBasedCTA('download_cta')%}
+    {% if cta3 %}
+        {{ this.render('partials/cta/cta2.twig', {
+            networkData: networkData,
+        }) | raw }}
+    {% endif %}
+
+    
+    {% set assets = _Media.getAssetCollections() %}
+
+    {% set collectionId = null %}
+
+    {% for asset in assets %} 
+        {% if asset['name'] | lower == "gallery" | lower %} 
+            {% set collectionId = asset['id'] %}
+        {% endif %}
+    {% endfor %}
+
+
+    {% set galleryArray = {} %}
+
+    {% if collectionId != null %}
+        {% set gallery = _Media.get({'collections': collectionId}) %}
+    {% endif %}
+    {% set galleryCount = 0 %}
+    <div class="gallery_view">
+        {% for logo in 0..4 if gallery[galleryCount] %}
+            {% set image = {
+                id: gallery[logo].cloudinary_public_id,
+                cloudName: gallery[logo].cloudinary_cloud_name,
+                path: gallery[logo].cdn_path,    
+            } %}
+
+
+            {% set width = assetDimensions[gallery[logo].title | lower] %}
+            {% set height = assetDimensions[gallery[logo].title | lower] %}
+
+            {% if width == null %}
+                {% set width = 270 %}
+                {% set height = 270 %}
+            {% endif %}
+            {% set url = _Media.getMediaUrl(image, width, height, {'crop': 'fill', 'gravity': 'auto', "effect":'sharpen', 'quality': 100} ) %}
+            
+            {% set galleryArray = galleryArray | merge({(gallery[logo].title | lower): gallery}) %}
+            {% set galleryCount = galleryCount + 1 %}
+            <a class="">
+                <img src="{{url}}" />
+            </a>
+        {% endfor %}
     </div>
-    <div class="cta-image" style="background-image: url('{{networkData.templatePath}}/static/images/cta_image.png')"></div>
-</div>
-<div class="cta-wrapper cta-d2" style="height: 600px"></div>
-<div class="c-section-panel__background">
-    <section class="container ">    
-        <div class="row" data-section="01">
-            <div class="col-12">
-                <div class="c-page-head c-page-head-xs inverse">
-                    <div class="u-heading__large u-heading__large-xs">Lorem ipsum & ipsum</div>
-                    <div class="u-heading__large u-heading__large-xs">Vivamus sagittis mi vitae ipsum porttitor vehicula id in dolor.</div>
-                </div>
-            </div>
-        </div>
-    </section>
-</div>
-<div class="cta-wrapper cta-d3"></div>
-<div class="cta-wrapper cta-d4">
-</div>
 
+    
+
+    {% set cta4 = _CallToAction.getKeywordBasedCTA('company_cta')%}
+    {% if cta4 %}
+        {{ this.render('partials/cta/cta4.twig', {
+            networkData: networkData,
+        }) | raw }}
+    {% endif %}
+
+
+    <div class="j-keyword-cont" data-keywords="{{blogData.keywords}}"></div>
 </main><!-- .site-main -->
 
 
