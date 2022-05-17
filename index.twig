@@ -196,7 +196,7 @@
 
     {% set cta3 = _CallToAction.getKeywordBasedCTA('download_cta')%}
     {% if cta3 %}
-        {{ this.render('partials/cta/cta2.twig', {
+        {{ this.render('partials/cta/cta3.twig', {
             networkData: networkData,
         }) | raw }}
     {% endif %}
