@@ -337,23 +337,23 @@ $('document').ready(function() {
     });
 
     function sidebarMenuOpen() {
-        let getMenuClick = document.querySelector(".js-menu");
+        var getMenuClick = document.querySelector(".js-menu");
         getMenuClick.addEventListener("click", openMenuFunction);
         function openMenuFunction() {
-          document.querySelector(".c-sidebarMenu").classList.add("sidebar-active");
-          document.querySelector("body").classList.add("u-noscroll");
+            document.querySelector(".c-sidebarMenu").classList.add("sidebar-active");
+            document.querySelector("body").classList.add("u-noscroll");
         }
-      }
-      sidebarMenuOpen();
-      
-      function sidebarMenuClose() {
-        let getMenuClick = document.querySelector(".js-closeMenu");
+    }
+    sidebarMenuOpen();
+
+    function sidebarMenuClose() {
+        var getMenuClick = document.querySelector(".js-closeMenu");
         getMenuClick.addEventListener("click", closeMenuFunction);
         function closeMenuFunction() {
-          document.querySelector(".c-sidebarMenu").classList.remove("sidebar-active");
-          document.querySelector(".body").classList.remove("u-noscroll");
+            document.querySelector(".c-sidebarMenu").classList.remove("sidebar-active");
+            document.querySelector(".body").classList.remove("u-noscroll");
         }
-      }
-      
-      sidebarMenuClose();
+    }
+
+    sidebarMenuClose();
 });
