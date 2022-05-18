@@ -108,9 +108,14 @@
                     color: $white;
                     margin-bottom: 30px;
                     @include font-size(18);
-                    display: block;
+                    display: block; 
                 }
             }
         }
     }
+}
+
+
+.tesssst {
+    overflow: hidden;
 }

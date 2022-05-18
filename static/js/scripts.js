@@ -346,7 +346,7 @@ $('document').ready(function() {
     }
     sidebarMenuOpen();
 
-    function sidebarMenuClose() {
+    function sidebarMenuClose() { 
         var getMenuClick = document.querySelector(".js-closeMenu");
         getMenuClick.addEventListener("click", closeMenuFunction);
         function closeMenuFunction() {
