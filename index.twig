@@ -236,11 +236,10 @@
                 {% set height = 270 %}
             {% endif %}
             {% set url = _Media.getMediaUrl(image, width, height, {'crop': 'fill', 'gravity': 'auto', "effect":'sharpen', 'quality': 100} ) %}
-            
             {% set galleryArray = galleryArray | merge({(gallery[logo].title | lower): gallery}) %}
             {% set galleryCount = galleryCount + 1 %}
-            <a class="">
-                <img src="{{url}}" />
+            <a href="{{gallery[logo].cdn_path}}" data-fancybox="gallery">
+                <img src="{{url}}" alt="image" />
             </a>
         {% endfor %}
     </div>

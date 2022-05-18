@@ -142,7 +142,6 @@ gulp.task('scripts-concat', function(){
         './static/js/plugins/jquery.lazyload.min.js',
         './static/js/plugins/jquery.dotdotdot.min.js',
         './static/js/plugins/owl.carousel.min.js',
-        './static/develment/js/plugins/owl.carousel2.thumbs.js',
         './static/js/plugins/moment.js',
         // './static/js/plugins/bootstrap-datetimepicker.js',
         './static/js/plugins/bootstrap4-datetime/src/js/bootstrap-datetimepicker.js',
