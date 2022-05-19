@@ -1,4 +1,5 @@
 {% set link = _Blog.getHomeBlogSettings() %}
+{% set defaultBlog = _Blog.getHomeBlogSettings() %}
 {% set footerLogo = networkData.templatePath~'/static/images/logo.svg' %}
 {% if networkData.logoMedia | length > 0 %}
     {% set footerLogo = _Media.getMediaUrl(networkData.secondaryLogoMedia, 650, 144, {'crop': 'fit'} )%}
@@ -24,6 +25,7 @@
     {% set link = ' href='~config['footer']['ctalink']~' target="_blank"' %}
 {% endif %}
 {% set addresses = defaultBlog.contact %}
+
 
 <footer class="c-footer">
     <div class="container">

@@ -63,8 +63,6 @@ gulp.task("concat", function () {
   return gulp
     .src([
       "./static/css/main.css",
-      "./static/sass/vendors/owl.carousel.min.css",
-      "./static/sass/vendors/owl.theme.default.css",
     ]) // path to your file
     .pipe(concat("concat.css"))
 
