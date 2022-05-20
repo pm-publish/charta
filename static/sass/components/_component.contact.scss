@@ -49,7 +49,11 @@
             }
         }
     }
-
+    iframe {
+        @media (max-width: 992px) {
+            height: 500px;
+        }
+    }
     &__address-box {
         background: #FFFFFF;
         box-shadow: 3px -3px 8px rgba(0, 0, 0, 0.1);
