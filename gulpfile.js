@@ -109,6 +109,7 @@ gulp.task('scripts-concat', function () {
     './static/js/vendor/jquery.dotdotdot.min.js',
     './static/js/vendor/owl.carousel.min.js',
     './static/js/vendor/owl.carousel2.thumbs.js',
+    './static/js/vendor/fancybox.js',
     // './static/js/scripts.js',
     // './assets/scripts/sdk/yii/yii.js',
   ])
