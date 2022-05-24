@@ -1,4 +1,5 @@
 @mixin card-1-base() {
+    
     @include card-name("C1 mobile");
     .c-cards-view {
         @include flex-direction(column, vertical);

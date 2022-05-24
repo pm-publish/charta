@@ -79,3 +79,19 @@
         </div>
     </div>
 </header>
+
+<div class="c-sidebarMenu">
+    <div class="c-sidebarMenu__closeInfo">
+        <button class="js-closeMenu">
+            <span class="text">Close</span>
+            <span class="icon">
+                <img src="{{networkData.templatePath}}/static/icons/icons-reverse.svg" class="img-fluid" /> 
+            </span>
+        </button>
+    </div>
+    <div class="c-sidebarMenu__mainNav">
+        <ul class="c-navigation-0__list">
+            {{ this.render('../../../partials/_menu.twig', {'menu': headermenu}) | raw }}
+        </ul>
+    </div>
+</div>

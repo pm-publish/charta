@@ -1,4 +1,5 @@
 {% set link = _Blog.getHomeBlogSettings() %}
+{% set defaultBlog = _Blog.getHomeBlogSettings() %}
 {% set footerLogo = networkData.templatePath~'/static/images/logo.svg' %}
 {% if networkData.logoMedia | length > 0 %}
     {% set footerLogo = _Media.getMediaUrl(networkData.secondaryLogoMedia, 650, 144, {'crop': 'fit'} )%}
@@ -25,6 +26,83 @@
 {% endif %}
 {% set addresses = defaultBlog.contact %}
 
+{% set themeColor = "#4A90E2" %}
+{% if networkData['styling']['colours']['primaryColor'] is defined %}
+    {% set themeColor = networkData['styling']['colours']['primaryColor'] %}
+{% endif %}
+
+{% set themeColorPrimary = "#4A90E2" %}
+{% if networkData['styling']['colours']['headingColor'] is defined %}
+    {% set themeColorPrimary = networkData['styling']['colours']['headingColor'] %}
+{% endif %}
+
+
+<div class="c-contactWrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-lg-6">
+                <div class="c-contactWrapper__form">
+                    <h2>Get in touch</h2>
+                    <p>Lorem ipsum marieo asirhw astaje maiss aoeiusm.</p>
+
+                    {{ set(this, 'title', 'Contact Us') }} 
+                    {% set config      = _Network.getThemeConfig() %}
+
+                    {{ this.render('../../../partials/form.twig', {
+                        page   : this.title,
+                        config : config
+                    }) | raw }}
+
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 p-0">
+             {% set googleMapAddress = ''%}
+            {% if addresses.address is not empty %}
+                {% set googleMapAddress = addresses.address %}
+            {% endif %}
+            {% if addresses.city is not empty %}
+                {% set googleMapAddress = googleMapAddress~','~ addresses.city %}
+            {% endif %}
+            {% if addresses.state is not empty %}
+                {% set googleMapAddress = googleMapAddress~','~ addresses.state %}
+            {% endif %}
+            {% if addresses.country is not empty %}
+                {% set googleMapAddress = googleMapAddress~','~ addresses.country %}
+            {% endif %}
+
+            {% if googleMapAddress is not empty %}
+                <iframe
+                    src="https://maps.google.com/maps?q={{googleMapAddress | url_encode}}&amp;ie=UTF8&amp;&amp;output=embed"
+                    width="100%"
+                    height="100%"
+                    frameborder="0"
+                    style="border:0"
+                    class="contact__map"
+                    allowfullscreen>
+                </iframe>
+
+                <div class="c-contactWrapper__address-box">
+                    <div class="heading">
+                        <svg width="40" height="52" viewBox="0 0 40 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20.0004 0C8.94319 0 0 8.48579 0 18.977C0 23.1942 2.16808 27.7198 3.79405 30.24C7.42548 36 18.8618 50.8115 18.8618 50.8115C19.5122 51.6343 20.4879 51.6343 21.1382 50.8115C21.1382 50.8115 32.5745 36 36.206 30.24C37.832 27.7201 40 23.1945 40 18.977C40.0002 8.48579 31.0568 0 20 0H20.0004ZM20.0004 26.6402C15.5017 26.6402 11.8701 23.1945 11.8701 18.9257C11.8701 14.6568 15.5015 11.2111 20.0004 11.2111C24.4994 11.2111 28.1308 14.6568 28.1308 18.9257C28.1308 23.1945 24.4994 26.6402 20.0004 26.6402Z" fill="{{themeColorPrimary}}"/>
+                        </svg>
+
+                        <h3>Visit us</h3>
+                    </div>
+                    <p>
+                        {{addresses.address}}<br/>
+                        {{addresses.city}} {{addresses.state}} {{addresses.postcode}}
+                    </p>
+                    <p>
+                        <strong>t</strong>  08 8586 8080<br/>
+                        <strong>f</strong>  08 8586 8085<br/>
+                    </p>
+                </div>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
 <footer class="c-footer">
     <div class="container">
         <div class="row">
@@ -63,7 +141,7 @@
             <div class="col-12 col-md-3">
                 <div class="c-footer__address">
                     <p>
-                        {{addresses.address}},<br/>
+                        {{addresses.address}}<br/>
                         {{addresses.city}} {{addresses.state}} {{addresses.postcode}}
                     </p>
                     <p>

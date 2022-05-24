@@ -1,224 +1,128 @@
-var Card = function() {
+import Handlebars                           from 'handlebars'
+import { General_ShowNotification, 
+         General_ShowErrorMessage }         from './sdk/common'
+import { pinUnpinArticle, deleteArticle }   from './sdk/article'
+import { Templates }                        from './article-templates';
+import { Server }                           from './framework';
+import { Cloudinary }                       from '@cloudinary/base'
+import { fill, thumbnail }                  from "@cloudinary/base/actions/resize";
+import { faces }                            from "@cloudinary/base/qualifiers/focusOn";
+import { focusOn }                          from "@cloudinary/base/qualifiers/gravity";
+
+
+
+export const Card = function(attrs = {}) {
+    this.data = attrs;
     this.events();
 };
+window.Card = Card;
 
-Card.prototype.renderScreenCards = function(options, data) 
+Card.prototype.render = function(options = {})
 {
     var self = this;
+    var template = (options.template) ? Templates[options.template] : Templates.systemCardTemplate;
 
-    var container = options.container;
+    const card = {};
 
-    container.data('existing-nonpinned-count', data.existingNonPinnedCount);
-
-    var html = "";
-    for (var i in data.articles) {
-        data.articles[i]['imageOptions'] = { width:1400, height:800 };
-        data.articles[i]['lazyloadImage'] = false;
-        html += self.renderCard(data.articles[i], {'cardClass': options.cardClass} );
+    card['cardClass'] = options.cardClass || "";
+    if (this.data.status == "draft") {
+        card['articleStatus'] = "draft";
+        card['cardClass'] += " draft"; 
     }
 
-    container.empty().append(html);
-
-    $(".j-truncate").dotdotdot();
-};
+    
 
 
-
-
-Card.prototype.screen = function() 
-{
-    var self = this;
-
-    var btn = $('.loadMoreArticles');
-    var blogFetchInterval       = 300000 // 5 minutes
-    var pageRefreshInterval     = 60000 * 10; // 10 minutes
-    var articleRenderInterval   = 10000; // 10 seconds
-    var csrf = $('meta[name="csrf-token"]').attr("content");
-    var currentScreen = 0;
-    var articleCount = 0;
-
-    var options = {
-        'screens' : [
-            {
-                style: "card-screen",
-                limit: 15,
-                logo: "large-logo"
-            }
-        ],
-        'container': $( '#'+btn.data('container') ),
-        'currentScreen': currentScreen,
-        'count': 15
-    };
-
-
-    var runContinous = function() {
-
-                            // 1 minute * amount of minutes
-        var numberOfScreens = options.screens.length;
-        currentScreen++;
-        if (currentScreen > numberOfScreens) {
-            currentScreen = 1;
-        }
-        url = _appJsConfig.appHostName + '/home/load-articles';
-        requestData = {
-            offset          : currentScreen,
-            loadtype        : "home",
-            _csrf           : csrf, 
-            limit           : options.screens[currentScreen-1].limit,
-            cardClass       : options.screens[currentScreen-1].style,
-            blogGuid        : options.container.data('blogid')
-        }
-        articleCount            = 1;
-
-        if (articleCount >= options.count) {
-            articleCount = 0;
-        }
-
-        // options.offset = articleCount;
-        // options.nonPinnedOffset = articleCount;
-
-        $.ajax({
-            url      : url,
-            data     : requestData,
-            type     : 'post',
-            dataType : 'json',
-        }).done(function(data) {
-
-            if (data.articles.length == 0 ) {
-                articleCount = 0;
-                return;
-            }
-
-            if (data.success == 1) {
-
-                if (self.interval) {
-                    clearInterval(self.interval);
-                }
-
-                self.interval = setInterval( function() {
-                    var article = data.articles[articleCount];
-
-                    articleCount++;
-                    self.renderScreenCards(options, { 'articles': [ article ] });
-                    if (articleCount >= data.articles.length) {
-                        articleCount = 0;
-                    }
-                } , articleRenderInterval );
-                
-                self.renderScreenCards(options, { 'articles': [ data.articles[2] ] });
-
-            }
-        });
-    }
-
-
-    runContinous();
-
-    // setInterval( runContinous, blogFetchInterval ); //300000
-    setInterval( function() {
-        location.reload(false);
-    } , pageRefreshInterval );
-};
-
-Card.prototype.renderCard = function(card, options)
-{
-
-    var self = this;
-    options = options || {};
-
-    var template = (options.template) ? Acme.templates[options.template] : Acme.templates.systemCardTemplate;
-    card['containerClass'] = options.cardClass || "";
+    card['url'] = this.data.url;
+    card['editUrl'] = this.data.editUrl;
     card['cardType'] = options.type || "";
     card['lightbox'] = options.lightbox || "";
-    
-    if (card.status == "draft") {
-        card['articleStatus'] = "draft";
-        card['containerClass'] += " draft"; 
-    }
+    card['position'] = this.data.position;
 
-    card['pinTitle'] = (card.isPinned == 1) ? 'Un-Pin Article' : 'Pin Article';
-    card['pinText']  = (card.isPinned == 1) ? 'Un-Pin' : 'Pin';
-    card['promotedClass'] = (card.isPromoted == 1)? 'ad_icon' : '';
-    
+    card['isPinned'] =  this.data.isPinned;
+    card['pinTitle'] = (this.data.isPinned == 1) ? 'Un-Pin Article' : 'Pin Article';
+    card['pinText']  = (this.data.isPinned == 1) ? 'Un-Pin' : 'Pin';
+    card['promotedClass'] = (this.data.isPromoted == 1)? 'ad_icon' : '';
+    card['hasMediaClass'] = (this.data.hasMedia == 1)? 'withImage__content' : 'without__image';
+    card['hasMedia'] = (this.data.hasMedia == 1)? true : false;
+    card['userHasBlogAccess']  = _appJsConfig.userHasBlogAccess;
+    card['imgBackgroundStyle'] = (this.lazyloadImage == false) ? '' : 'style="background-image:url(https://placeholdit.imgix.net/~text?txtsize=33&txt=Loading&w=450&h=250)"';
     // mainly for screen to turn off lazyload and loading background img
-    // card['imgClass'] = (card.lazyloadImage == false) ? '' : 'lazyload';
-    // card['imgBackgroundStyle'] = (card.lazyloadImage == false) ? '' : 'style="background-image:url(https://placeholdit.imgix.net/~text?w=1&h=1)"';
+    card['imgClass'] = (this.data.lazyloadImage == false) ? '' : 'lazyload';
     
-
-    // card['readingTime']= self.renderReadingTime(card.readingTime);
-    
+    card['readingTime'] = self.renderReadingTime(this.data.readingTime);
     var width = typeof options.imageWidth !== "undefined" ? options.imageWidth : 500;
     var height = typeof options.imageHeight !== "undefined" ? options.imageHeight : 350;
-    var gravity = typeof options.imageGravity !== "undefined" ? options.imageGravity : 'faces';
-
-    if (card.imageOptions) {
-        width = card.imageOptions.width || width;
-        height = card.imageOptions.height || height;
-        gravity = card.imageOptions.gravity || gravity;
-    }
+    var gravity = typeof options.imageGravity !== "undefined" ? options.imageGravity : null;
 
     if (options.imageOriginal) {
-        width = card.featuredMedia.width;
-        height = card.featuredMedia.height;
+        var width = this.featuredMedia.width;
+        var height = this.featuredMedia.height;
     }
-
-    var articleContent = card.excerpt;
+    var showArticleContent = '';
     if (typeof options.content != "undefined" && options.content === "full") {
-        articleContent = '<div class="acme-c-cards-view__articleContent">' + card.content + '</div>';
+        showArticleContent = true;
     }
-
+ 
+    if (this.imageOptions) {
+        width = this.imageOptions.width || width;
+        height = this.imageOptions.height || height;
+    }
     
+    card['draggable'] = "false";
+
+
+    // const profileImage = this.data['createdBy']['media'];
+    const articleImage = this.data['featuredMedia'];
+    const cld = new Cloudinary({
+        cloud: {
+          cloudName: articleImage.cloudName
+        }
+    });
+
+    // Docs:
+    // https://cloudinary.com/documentation/javascript2_image_transformations
+    const articleImg = cld.image(articleImage.id);
+    // const profileImg = cld.image(profileImage.id);
+    articleImg.resize( fill().width(width).height(height).gravity( focusOn( faces() ) ) );
+    // profileImg.resize( thumbnail().width(34).height(34).gravity( focusOn( faces() ) ) );
+
+    // card['profileImg'] = profileImg.toURL();
+    card['imageUrl'] = articleImg.toURL();
+
+    card['label'] = this.data.label;
+    card['excerpt'] = this.data.excerpt;
+    card['title'] = this.data.title;
+    card['hasContent'] = showArticleContent;
+    card['content'] = this.data.content;
+    card['author'] = this.data.createdBy.displayName;
+    card['date'] = this.data.createdDate;
     card['titleString'] = "";
+
     if (_appJsConfig.isUserLoggedIn === 1 && _appJsConfig.userHasBlogAccess === 1) {
         var totalstring = "";
-        var totals = (card.total ) ? card.total : false;
+        var totals = (this.data.total ) ? this.data.total : false;
         if ( totals ) {
             totalstring = "Viewed " + totals.view + " times";
-            totalstring = totalstring + " Published " + card.publishedDateTime;
+            totalstring = totalstring + " Published " + this.data.publishedDateTime;
         }
         card['titleString'] = totalstring;
+        card['draggable'] = "true";
     }
 
+    var articleId = parseInt(this.data.articleId);
+    var articleTemplate;
 
-
-    if (card.social) {
-        card['hasMediaClass'] = (card.hasMedia == 1)? 'withImage__content' : 'without-image';
-
-        card.params = {
-            guid        : card.socialGuid,
-            image       : card.media.path,
-            category    : card.source,
-            title       : "",
-            content     : card.content,
-            author      : card.user.name,
-            publishDate : card.publishDate,
-            videoClass  : card.media['type'] == 'video' ? 'c-cards-view__media--video' : '',
-            hasMedia    : card.hasMedia,
-            social      : 1
-        }
-
+    if (isNaN(articleId) || articleId <= 0) {
+        // card['videoClass'] = '';
+        // if(card.social.media.type && card.social.media.type == 'video') {
+        //     card['videoClass'] = 'video_card';
+        // }
+        articleTemplate = Handlebars.compile(template);
     } else {
-        var hasMedia = (card.hasMedia == 1 || card.hasPreviewMedia);
-        card['hasMediaClass'] = hasMedia ? 'withImage__content' : 'without-image';
-        card.params = {
-            id          : parseInt(card.articleId),
-            guid        : card.guid,
-            image       : $.image({media:card['featuredMedia'], mediaOptions:{width: width ,height:height, crop: 'fill', gravity: gravity} }),
-            category    : card.label,
-            title       : card.title,
-            content     : articleContent,
-            author      : card.createdBy.displayName,
-            publishDate : card.publishDate,
-            videoClass  : card.featuredMedia['type'] == 'video' ? 'c-cards-view__media--video' : '',
-            hasMedia    : hasMedia,
-            social      : 0
-        };
-
-        
+        card['articleId'] = this.data.articleId;
+        articleTemplate = Handlebars.compile(template);
     }
-
-    var articleTemplate = Handlebars.compile(template);
-
     return articleTemplate(card);
 }
 
@@ -237,7 +141,7 @@ Card.prototype.renderReadingTime = function (time)
 // events
 Card.prototype.bindPinUnpinArticle = function()
 {
-    $('button.PinArticleBtn').Ajax_pinUnpinArticle({
+    pinUnpinArticle( $('button.PinArticleBtn'), {
         onSuccess: function(data, obj){
             var status = $(obj).data('status');
             var obj = $(obj);
@@ -249,74 +153,11 @@ Card.prototype.bindPinUnpinArticle = function()
                 : obj.find('span').first().html('Pin');        
         }
     });
-
-    // $('button.liveArticleBtn').on('click', function(e) {
-    //     e.preventDefault();
-    //     e.stopPropagation();
-
-    //     var $elem = $(e.target);
-    //     var card = $elem.closest('a');
-    //     var status = card.data('editing');
-    //     var headline = card.find('.j-headline');
-    //     var excerpt = card.find('.j-excerpt');
-
-    //     excerpt.unbind();
-
-    //     if (!status) {
-    //         card.draggable( 'disable' );
-    //         card.on("click", function(e) {e.preventDefault()});
-    //         card.data('editing', true);
-    
-    //         headline.attr('contenteditable', true)
-    //                 .addClass('editactive')
-    //                 .on('click', function(ev) {
-    //                     ev.preventDefault();
-    //                     console.log('clicked on headline');
-    //                 });
-
-    //         var origExcerpt = excerpt.data('original');
-
-    //         excerpt 
-    //             .attr('contenteditable', true)
-    //             .addClass('editactive')
-    //             .css({"overflow":'initial'})
-    //             .text(origExcerpt)
-    //             .on({
-    //                 "keyup": function(ev) {
-    //                     if (ev.which === 13) {
-    //                         ev.preventDefault();
-    //                         console.log('saving');
-    //                     }
-    //                 },
-    //                 "keydown": function(ev) {
-    //                     if (ev.which === 13) {
-    //                         ev.preventDefault();
-    //                         console.log('entering');
-    //                     }
-    //                 }
-    //             });
-
-        
-    //     } else {
-    //         headline.removeAttr('contenteditable')
-    //                 .removeClass('editactive');
-    //          excerpt.removeAttr('contenteditable')
-    //                 .removeClass('editactive')
-    //                 .attr('style', "")
-
-    //         card.data('editing', false);
-    //         card.draggable( 'enable' );
-
-    //     }
-    // });
-
-
-
 };
 
 Card.prototype.bindDeleteHideArticle = function()
 {
-    $('button.HideBlogArticle').Ajax_deleteArticle({
+    deleteArticle( $('button.HideBlogArticle'), {
         onSuccess: function(data, obj){
             $(obj).closest('.card').parent('div').remove();
             var postsCount = $('body').find('.card').length;
@@ -327,29 +168,6 @@ Card.prototype.bindDeleteHideArticle = function()
     });
 };
 
-Card.prototype.bindSocialUpdatePost = function () 
-{
-    $(document).on('click', '.j-editSocialPost', function (e) {
-
-        e.preventDefault();
-        var elem = $(this);
-        var url = elem.data('url');
-        var popup = window.open(url, '_blank', 'toolbar=no,scrollbars=yes,resizable=false,width=360,height=450');
-        popup.focus();
-
-        var intervalId = setInterval(function () {
-            if (popup.closed) {
-                clearInterval(intervalId);
-                var socialId = elem.parents('a').data('id');
-                if ($('#updateSocial' + socialId).data('update') == '1') {
-                    $().General_ShowNotification({message: 'Social Post(s) updated successfully.'});
-                }
-            }
-        }, 50);
-
-        return;
-    });
-};
 
 Card.prototype.bindLightbox = function()
 {
@@ -431,140 +249,239 @@ Card.prototype.bindLightbox = function()
     });
 };
 
+
+
 Card.prototype.initDraggable = function()
 {
-    $('.swap').draggable({
-        helper: 'clone',
-        revert: true,
-        zIndex: 100,
-        scroll: true,
-        scrollSensitivity: 100,
-        cursorAt: { left: 150, top: 50 },
-        appendTo:'body',
-        start: function( event, ui ) {
 
-            ui.helper.attr('class', '');
-            var postImage = $(ui.helper).data('article-image');
-            var postText = $(ui.helper).data('article-text');
-            if(postImage !== "") {
-                $('div.SwappingHelper img.article-image').attr('src', postImage);
+    if ( $.ui ) {
+        $('.swap').draggable({
+            helper: 'clone',
+            revert: true,
+            zIndex: 100,
+            scroll: true,
+            scrollSensitivity: 100,
+            cursorAt: { left: 150, top: 50 },
+            appendTo:'body',
+            start: function( event, ui ) {
+                ui.helper.attr('class', '');
+                var postImage = $(ui.helper).data('article-image');
+                var postText = $(ui.helper).data('article-text');
+                if(postImage !== "") {
+                    $('div.SwappingHelper img.article-image').attr('src', postImage);
+                }
+                else {
+                    $('div.SwappingHelper img.article-image').attr('src', 'http://www.placehold.it/100x100/EFEFEF/AAAAAA&amp;text=no+image');
+                }
+                $('div.SwappingHelper p.article-text').html(postText);
+                $(ui.helper).html($('div.SwappingHelper').html());    
             }
-            else {
-                $('div.SwappingHelper img.article-image').attr('src', 'http://www.placehold.it/100x100/EFEFEF/AAAAAA&amp;text=no+image');
-            }
-            $('div.SwappingHelper p.article-text').html(postText);
-            $(ui.helper).html($('div.SwappingHelper').html());    
-        }
-    });
+        });
+    }
 };
 
 Card.prototype.initDroppable = function()
 {
     var self = this;
 
-    $('.swap').droppable({
-        hoverClass: "ui-state-hover",
-        drop: function(event, ui) {
-            function getElementAtPosition(elem, pos) {
-                return elem.find('a.card').eq(pos);
-            }
 
-            var sourceObj       = $(ui.draggable);
-            var destObject      = $(this);
-            var sourceProxy     = null;
-            var destProxy       = null;
+    if ( $.ui ) {
 
-
-            if (typeof sourceObj.data('proxyfor') !== 'undefined') {
-                sourceProxy = sourceObj;
-                sourceObj   = getElementAtPosition($( '.' + sourceProxy.data('proxyfor')), sourceProxy.data('position') -1);
-                sourceObj.attr('data-position', destObject.data('position'));
-
-            }
-            if (typeof destObject.data('proxyfor') !== 'undefined') {
-                destProxy = destObject;
-                destObject = getElementAtPosition($( '.' + destObject.data('proxyfor')), destObject.data('position') -1);
-                destObject.attr('data-position', sourceObj.data('position'));
-            }
-
-
-
-            //get positions
-            var sourcePosition      = sourceObj.data('position');
-            var sourcePostId        = sourceObj.data('id');
-            var sourceIsSocial      = parseInt(sourceObj.data('social'));
-            var destinationPosition = destObject.data('position');
-            var destinationPostId   = destObject.data('id');
-            var destinationIsSocial = parseInt(destObject.data('social'));
-
-            var swappedDestinationElement = sourceObj.clone().removeAttr('style').insertAfter( destObject );
-            var swappedSourceElement = destObject.clone().insertAfter( sourceObj );
-            
-
-            if (sourceProxy) {
-                sourceProxy.find('h2').text(destObject.find('h2').text());
-                swappedDestinationElement.addClass('swap');
-                swappedSourceElement.removeClass('swap');
-                sourceProxy.attr('data-article-text', destObject.data('article-text'));
-                sourceProxy.attr('data-article-image', destObject.data('article-image'));
-            }
-
-            if (destProxy) {
-                if (sourceIsSocial) {
-                    destProxy.find('h2').text( sourceObj.find('p').text() );
-                } else {
-                    destProxy.find('h2').text( sourceObj.find('h2').text() );
+        $('.swap').droppable({
+            hoverClass: "ui-state-hover",
+            drop: function(event, ui) {
+                
+                function getElementAtPosition(elem, pos) {
+                    return elem.find('a.card').eq(pos);
                 }
-                swappedSourceElement.addClass('swap');
-                swappedDestinationElement.removeClass('swap');
-                destProxy.attr('data-article-text', sourceObj.data('article-text'));
-                destProxy.attr('data-article-image', sourceObj.data('article-image'));
-            }
-            
-            swappedSourceElement.data('position', sourcePosition);
-            swappedDestinationElement.data('position', destinationPosition);
-            swappedSourceElement.find('.PinArticleBtn').data('position', sourcePosition);
-            swappedDestinationElement.find('.PinArticleBtn').data('position', destinationPosition);
 
+                var sourceObj       = $(ui.draggable); //card being dragged
+                var destObject      = $(this); //card it lands on
+                var sourceProxy     = null;
+                var destProxy       = null;
 
-            $(ui.helper).remove(); //destroy clone
-            sourceObj.remove();
-            destObject.remove();
-            
-            var csrfToken = $('meta[name="csrf-token"]').attr("content");
-            var postData = {
-                sourcePosition: sourcePosition,
-                sourceArticleId: sourcePostId,
-                sourceIsSocial: sourceIsSocial,
                 
-                destinationPosition: destinationPosition,
-                destinationArticleId: destinationPostId,
-                destinationIsSocial: destinationIsSocial,
+
+                if (typeof sourceObj.data('proxyfor') !== 'undefined') {
+                    sourceProxy = sourceObj;
+                    sourceObj   = getElementAtPosition($( '.' + sourceProxy.data('proxyfor')), sourceProxy.data('position') -1);
+                    sourceObj.attr('data-position', destObject.data('position'));
+
+                }
+                if (typeof destObject.data('proxyfor') !== 'undefined') {
+                    destProxy = destObject;
+                    destObject = getElementAtPosition($( '.' + destObject.data('proxyfor')), destObject.data('position') -1);
+                    destObject.attr('data-position', sourceObj.data('position'));
+                }
+
+
+
+                //get positions
+                var sourcePosition       = sourceObj.data('position');
+                var sourcePostId         = sourceObj.data('id');
+                var sourceIsSocial       = parseInt(sourceObj.data('social'));
+                var sourcePinStatus      = parseInt(sourceObj.find('.PinArticleBtn').attr('data-status'));
+
+                var destinationPosition  = destObject.data('position');
+                var destinationPostId    = destObject.data('id');
+                var destinationIsSocial  = parseInt(destObject.data('social'));
+                var destinationPinStatus = parseInt(destObject.find('.PinArticleBtn').attr('data-status'));
+
+
+                var swappedDestinationElement = sourceObj.clone().removeAttr('style').insertAfter( destObject );
+                var swappedSourceElement = destObject.clone().insertAfter( sourceObj );
                 
-                _csrf: csrfToken
-            };
 
-            $.ajax({
-                url: _appJsConfig.baseHttpPath + '/home/swap-article',
-                type: 'post',
-                data: postData,
-                dataType: 'json',
-                success: function(data){
+                if (sourceProxy) {
+                    sourceProxy.find('h2').text(destObject.find('h2').text());
+                    swappedDestinationElement.addClass('swap');
+                    swappedSourceElement.removeClass('swap');
+                    sourceProxy.attr('data-article-text', destObject.data('article-text'));
+                    sourceProxy.attr('data-article-image', destObject.data('article-image'));
+                }
 
-                    if(data.success) {
-                        $.fn.General_ShowNotification({message: "Articles swapped successfully"});
+                if (destProxy) {
+                    if (sourceIsSocial) {
+                        destProxy.find('h2').text( sourceObj.find('p').text() );
+                    } else {
+                        destProxy.find('h2').text( sourceObj.find('h2').text() );
                     }
+                    swappedSourceElement.addClass('swap');
+                    swappedDestinationElement.removeClass('swap');
+                    destProxy.attr('data-article-text', sourceObj.data('article-text'));
+                    destProxy.attr('data-article-image', sourceObj.data('article-image'));
+                }
+                
+                swappedSourceElement.attr('data-position', sourcePosition);
+                swappedDestinationElement.attr('data-position', destinationPosition);
+
+                swappedSourceElement.find('.PinArticleBtn').attr('data-position', sourcePosition);
+                swappedDestinationElement.find('.PinArticleBtn').attr('data-position', destinationPosition);
+
+                swappedSourceElement.find('.PinArticleBtn').attr('data-status', destinationPinStatus);
+                swappedDestinationElement.find('.PinArticleBtn').attr('data-status', sourcePinStatus);
+
+
+                $(ui.helper).remove(); //destroy clone
+                sourceObj.remove();
+                destObject.remove();
+                
+
+                var postData = {
+                    sourcePosition: sourcePosition,
+                    sourceArticleId: sourcePostId,
+                    sourceIsSocial: sourceIsSocial,
                     
-                    $(".card p, .card h2").dotdotdot();
-                    // self.events();
+                    destinationPosition: destinationPosition,
+                    destinationArticleId: destinationPostId,
+                    destinationIsSocial: destinationIsSocial,
+                };
+
+
+                Server.create(_appJsConfig.baseHttpPath + '/home/swap-article', postData).done(function(data) {
+                    if(data.success) {
+                        General_ShowNotification({message: "Articles swapped successfully"});
+                    }
+        
+                    $(".j-truncate").dotdotdot();
                     self.events_refresh();
 
-                },
-            });
-
-        }
-    }); 
+                }).fail((e) => {
+                    General_ShowErrorMessage({message: e.responseText});
+                });
+    
+            }
+        }); 
+    }
 };
+
+
+
+Card.prototype.dragndrop = function() {
+    
+    var dragOver = function(event) {
+        event.preventDefault();
+    };
+    
+    var dragStart = function(event) {
+        event.dataTransfer.setData('text/plain', event.target.id);
+    }
+
+    var drop = function(event) {
+        var id = event.dataTransfer.getData('text');
+        var found = false;
+        var element = event.target;
+
+        while (element.parentNode) {
+            if (element.tagName.toLowerCase() !== 'a') {
+                element = element.parentNode;
+            } else if ( element.classList.contains('swap') ) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            return false;
+        }
+        
+        var sourceObj       = document.getElementById(id);
+        var destObject      = element; //card it lands on
+
+        var sourcePosition       = sourceObj.dataset.position;
+        var sourcePostId         = sourceObj.dataset.id;
+        var sourceIsSocial       = parseInt(sourceObj.dataset.social);
+        var sourcePinStatus      = parseInt(sourceObj.querySelector('.PinArticleBtn').getAttribute('data-status'));
+
+
+        var destinationPosition  = destObject.dataset.position;
+        var destinationPostId    = destObject.dataset.id;
+        var destinationIsSocial  = parseInt(destObject.dataset.social);
+        var destinationPinStatus = parseInt(destObject.querySelector('.PinArticleBtn').getAttribute('data-status'));
+
+
+        // var csrfToken = $('meta[name="csrf-token"]').attr("content");
+        var postData = {
+            sourcePosition: sourcePosition,
+            sourceArticleId: sourcePostId,
+            sourceIsSocial: sourceIsSocial,
+            
+            destinationPosition: destinationPosition,
+            destinationArticleId: destinationPostId,
+            destinationIsSocial: destinationIsSocial,
+            
+            // _csrf: csrfToken
+        };
+
+        sourceParent = sourceObj.parentNode;
+        destParent = destObject.parentNode;
+        sourceParent.removeChild(sourceObj);
+        sourceParent.appendChild(destObject);
+        destParent.appendChild(sourceObj);
+
+
+        Server.create(_appJsConfig.baseHttpPath + '/home/swap-article', postData).done(function(data) {
+            if(data.success) {
+                General_ShowNotification({message: "Articles swapped successfully"});
+            }
+            $(".j-truncate").dotdotdot();
+            self.events();
+
+        }).fail((e) => {
+            General_ShowErrorMessage({message: e.responseText});
+        });
+    };
+    // var enter = function(event) {
+    //     event.preventDefault();
+    // };
+
+    var cards = document.getElementsByClassName('swap');
+    for(var i = 0; i < cards.length; i++) {
+        cards[i].addEventListener('dragstart', dragStart);
+        cards[i].addEventListener('dragover', dragOver);
+        cards[i].addEventListener('drop', drop);
+    }
+}
+
 
 Card.prototype.events_refresh = function() 
 {
@@ -578,13 +495,12 @@ Card.prototype.events_refresh = function()
 
 Card.prototype.events = function() 
 {
+    var self = this;
     this.bindLightbox();
-
     if (_appJsConfig.isUserLoggedIn === 1 && _appJsConfig.userHasBlogAccess === 1) {
-        this.initDraggable();        
-        this.initDroppable();
-        this.bindPinUnpinArticle();
-        this.bindDeleteHideArticle();
-        this.bindSocialUpdatePost();
+        self.initDroppable();
+        self.initDraggable();        
+        self.bindPinUnpinArticle();
+        self.bindDeleteHideArticle();
     }
 };
