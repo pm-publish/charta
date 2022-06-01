@@ -187,8 +187,8 @@
 
         &:hover {
             color: $white;
-            border-color: $blackred;
-            background-color: $blackred;
+            border-color: #c0c0c0;
+            background-color: #c0c0c0;
         }
 
         &--bordered {
@@ -209,9 +209,9 @@
         margin-left: auto;
     }
     
-    &--disabled {
-        @include opacity(.5);
-    }
+    // &--disabled {
+    //     @include opacity(.5);
+    // }
 
     &--plan {
         min-width:230px;
@@ -230,10 +230,10 @@
     }
     &--disabled{
         border: none;
-        background: $grey-7;
+        background: #ababab;
         cursor: unset;
         &:hover{
-            background: $grey-7;
+            background: #ababab;
         }
     }
     &--subscribe{
