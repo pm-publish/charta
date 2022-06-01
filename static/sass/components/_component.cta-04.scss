@@ -47,7 +47,8 @@
                         &-companyName {
                             color: $white;
                             @include font-size(20);
-                            margin-top: 10px;                         
+                            margin-top: 10px;
+                            font-style: italic;                         
                         }
                         .c-button {
                             margin-top: 50px;

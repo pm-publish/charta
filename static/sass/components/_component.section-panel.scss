@@ -10,6 +10,11 @@
         @include margin(30 0 0 0);
     }
 
+    @media (max-width: 540px) {
+        padding-bottom: 60px;
+        margin-bottom: 40px;
+    }
+
     &:before {
         content: '';
         background-image: url('../icons/bg_shape_top.svg');
@@ -21,6 +26,10 @@
         display: block;
         background-position: bottom;
         top: -15%;
+
+        @media (max-width: 540px) {
+            display: none;
+        }
     }
 
     &:after {
@@ -34,12 +43,23 @@
         display: block;
         background-position: bottom;
         bottom: -1px;
+
+        @media (max-width: 540px) {
+            display: none;
+        }
+
     }
+
     &.c-section-panel__background__lessCard {
         padding-bottom: 140px;
 
         &:before {
             height: 650px;
+        }
+
+        @media (max-width: 540px) {
+            padding-bottom: 60px;
+            margin-bottom: 40px;
         }
     }
 }

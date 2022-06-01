@@ -9,6 +9,10 @@
         @include align-items(center);
         flex: 1;
 
+        &__figure {
+            margin-right: 30px;
+        }
+
         &__rs {
             @include flexbox;
             @include align-items(center);
