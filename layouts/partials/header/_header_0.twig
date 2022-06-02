@@ -71,7 +71,9 @@
                             <ul class="c-navigation-0__list">
                                 {{ this.render('../../../partials/_menu.twig', {'menu': headermenu}) | raw }}
                             </ul>
-                            <a href="javascript:;" class="c-button c-button--rounded c-button--theme">Contact us</a>
+                            {% if config['contactInfo'].label is defined and config['contactInfo'].label is not empty %}
+                                <a href={{ config['contactInfo'].link ? config['contactInfo'].link : "javascript:;" }} class="c-button c-button--rounded c-button--theme">{{config['contactInfo'].label}}</a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

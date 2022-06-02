@@ -79,12 +79,6 @@
         {% endif %}
     </div>
     <div class="j-keyword-cont" data-keywords="{{blogData.keywords}}"></div>
-    {% set cta4 = _CallToAction.getKeywordBasedCTA('company_cta')%}
-    {% if cta4 %}
-        {{ this.render('partials/cta/cta4.twig', {
-            networkData: networkData,
-        }) | raw }}
-    {% endif %}
 </main>
 
 

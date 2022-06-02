@@ -22,7 +22,7 @@
     }
 
     &__img-container {
-        background-color: $grey-3;
+        background-color: #F7F8FA;
         @media #{$tablet}{
             height: 400px;
         }
@@ -45,16 +45,20 @@
 
     &__img-container-article {
         height:100%;
+        @include flexbox;
+        @include justify-content(center);
+        @include align-items(center);
+        overflow: hidden;
     }
 
 
     &__img {
-        max-width: 100%;
-        margin:auto;
-        display: block;
-        width:auto !important;
-        height:100%;
-        object-fit: cover;
+        // max-width: 100%;
+        // margin:auto;
+        // display: block;
+        // width:auto !important;
+        // height:100%;
+        // object-fit: cover;
     }
 
 

@@ -38,7 +38,7 @@
                 <time class="article-gallery__date" datetime="{{publishedDate}}">{{article.publishedDate}}</time>
 
             </div>
-            <div class="col-12 col-lg-10 col-xl-8">
+            <div class="col-12 col-md-10 col-lg-6 mx-auto">
 
                 <div class="row">
                     
@@ -58,12 +58,9 @@
 
                 <div class="row">
                     <div class="col-12">
-
                         <div class="c-article__container c-article__container-sm u-margin-top-40">
                                 {{ ArticleContent | _resizeImages({'width': 600}) | raw }}
                         </div>
-
-
 
                         {% if showPaywall == true %}
                             {{this.render('partials/article/paywall_article_notice.twig', {networkData:networkData}) | raw}}
@@ -72,49 +69,8 @@
                     </div>
                 </div>
             </div>
-
-            <div class="d-none d-lg-block col-md-2">
-
-                {% if showPaywall != true %}
-                    <div id="owl-thumbs" class="owl-thumbs article-gallery__thumbs" data-slider-id="1">
-                        {% for image in article.media %}
-                            {% set articleImg = _Media.getMediaUrl(image,152, 95, {'crop': 'fill', 'gravity':'faces'} ) %}
-                            <img id="owl-{{loop.index}}" src="{{articleImg}}" class="owl-thumb-item">
-                        {% endfor %}
-                    </div>
-                {% endif %}
-
-            </div>
             
-        </div>
-        {% if showPaywall == false %}
-            <div class="row c-related-articles u-desktop-margin-top-100">
-                <div class="col-12">
-                    <div class="c-page-head c-page-head-xs">
-                        <div class="u-heading__large u-heading__large-xs u-pr--6">Latest Stories</div>
-                    </div>
-                </div>
-                {% set recentArticles = _Article.getRecentArticles({ limit: 5, excludeArticleIds : [article.id] }) %}
-                <div class="col-12">
-                    <div class="row">
-                        {% for i in 0..3 if recentArticles[i] %}
-                            <div class="col-12 col-md-4 col-lg-3{% if i == 3 %} d-md-none d-lg-block {% elseif i < 2 %} u-tablet-border-right u-desktop-border-right u-desktop-lg-border-right{% else %} u-desktop-lg-border-right{% endif %}">
-                                {{this.render('partials/_single-article.twig', {
-                                    article: recentArticles[i], 
-                                    imageSize: {width: 300, height: 180},
-                                    containerClass: 'card-2-mobile card-4-tablet card-4-desktop card-4-desktop-lg',
-                                    site:   site
-                                }) | raw}}
-                            </div>
-                            {% if i < 3 %}
-                                <hr class="o-rule o-rule--15 d-md-none">
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-        
+        </div>       
     </div>
 
     {% set theKeywords = '' %}

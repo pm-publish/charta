@@ -235,7 +235,7 @@
                 {% set width = 270 %}
                 {% set height = 270 %}
             {% endif %}
-            {% set url = _Media.getMediaUrl(image, width, height, {'crop': 'fill', 'gravity': 'auto', "effect":'sharpen', 'quality': 100} ) %}
+            {% set url = _Media.getMediaUrl(image, width, height, {'crop': 'fill', 'gravity': 'auto', 'quality': 100} ) %}
             {% set galleryArray = galleryArray | merge({(gallery[logo].title | lower): gallery}) %}
             {% set galleryCount = galleryCount + 1 %}
             <a href="{{gallery[logo].cdn_path}}" data-fancybox="gallery">
@@ -243,15 +243,6 @@
             </a>
         {% endfor %}
     </div>
-
-    
-
-    {% set cta4 = _CallToAction.getKeywordBasedCTA('company_cta')%}
-    {% if cta4 %}
-        {{ this.render('partials/cta/cta4.twig', {
-            networkData: networkData,
-        }) | raw }}
-    {% endif %}
 
 
     <div class="j-keyword-cont" data-keywords="{{blogData.keywords}}"></div>
