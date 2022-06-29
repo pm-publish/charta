@@ -49,8 +49,8 @@
         <div class="row">
             <div class="col-12 col-lg-6">
                 <div class="c-contactWrapper__form">
-                    <h2>Get in touch</h2>
-                    <p>Lorem ipsum marieo asirhw astaje maiss aoeiusm.</p>
+                    <h2>{{config.getInTouch.title}}</h2>
+                    <p>{{config.getInTouch.description}}</p>
 
                     {{ set(this, 'title', 'Contact Us') }} 
                     {% set config      = _Network.getThemeConfig() %}
@@ -101,8 +101,12 @@
                         {{addresses.city}} {{addresses.state}} {{addresses.postcode}}
                     </p>
                     <p>
-                        <strong>t</strong>  08 8586 8080<br/>
-                        <strong>f</strong>  08 8586 8085<br/>
+                        {% if addresses.phone != "" %}
+                        <strong>t</strong>  {{addresses.phone}}<br/>
+                        {% endif %}
+                        {% if addresses.email != "" %}
+                            <strong>e</strong>  {{addresses.email}}
+                        {% endif %}
                     </p>
                 </div>
             {% endif %}
@@ -152,17 +156,19 @@
                         {{addresses.city}} {{addresses.state}} {{addresses.postcode}}
                     </p>
                     <p>
-                        <strong>t</strong>  08 8586 8080<br/>
-                        <strong>f</strong>  08 8586 8085<br/>
+                        {% if addresses.phone != "" %}
+                        <strong>t</strong>  {{addresses.phone}}<br/>
+                        {% endif %}
                         {% if addresses.email != "" %}
                             <strong>e</strong>  {{addresses.email}}
                         {% endif %}
                     </p>
                     <h3>Opening hours</h3>
                     <p>
-                        Monday-Friday  9:00am - 5:00pm<br/>
-                        Saturday  10:00am - 4:00pm<br/>
-                        Sunday  11:00am - 3:00pm
+                    {% set openingHrs = addresses.openHours | split(',') %}
+                    {% for openingHr in openingHrs %}
+                        {{openingHr}}<br/>
+                    {% endfor %}
                     </p>
                 </div>
             </div>

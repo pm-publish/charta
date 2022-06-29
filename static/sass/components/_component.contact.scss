@@ -1,24 +1,29 @@
 .c-contactWrapper {
     background-color: #F6f5f5;
     &__form {
-        margin-left: calc(100% - (1321px /2) + 32px);
+        margin-left: calc(100% - (1321px / 2) + 32px);
         padding: 60px 0;
         height: 100%;
         max-width: 480px;
-        
-        @media (max-width: 992px) {
+        @media only screen and (min-width: 992px) and (max-width: 1320px) {
+            margin-left: 0px !important;
+            margin-right: auto !important;
+            max-width: 480px !important;
+
+        }
+        @media only screen and (max-width: 992px) {
             margin-left: calc((100% - 738px) / 2);
             margin-right: calc((100% - 738px) / 2);
             max-width: inherit;
         }
 
-        @media (max-width: 767px) {
+        @media only screen and (max-width: 767px) {
             margin-left: calc((100% - 576px) / 2);
             margin-right: calc((100% - 576px) / 2);
             max-width: inherit;
         }
 
-        @media (max-width: 576px) {
+        @media only screen and (max-width: 576px) {
             margin-left: 0;
             margin-right: 0;
             max-width: inherit;
@@ -57,7 +62,7 @@
     &__address-box {
         background: #FFFFFF;
         box-shadow: 3px -3px 8px rgba(0, 0, 0, 0.1);
-        max-width: 300px;
+        max-width: 350px;
         position: absolute;
         left: 40px;
         top: 50%;
