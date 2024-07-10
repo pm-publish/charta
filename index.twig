@@ -100,6 +100,7 @@
 <main id="main" class="site-main" role="main" data-layout="{{layoutTitle}}">
 
 {% set ctaHeader = _CallToAction.getKeywordBasedCTA('header_cta')%}
+{{_AppHelper.printArray(ctaHeader)}}
 {% if ctaHeader %}
     {{ this.render('partials/cta/cta1.twig', {
         networkData: networkData,
